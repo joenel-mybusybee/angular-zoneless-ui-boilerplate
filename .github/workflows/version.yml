@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout code at tag
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
 
       - name: Get version
         id: get_version
@@ -51,9 +54,14 @@ jobs:
       - name: Enable Pull Request Automerge
         if: steps.cpr.outputs.pull-request-number
         run: |
-          # First enable auto-merge
-          gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash --delete-branch
-          # Then approve it
+          # Configure git
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+          # First approve it
           gh pr review "${{ steps.cpr.outputs.pull-request-number }}" --approve
+
+          # Then enable auto-merge
+          gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash --delete-branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
