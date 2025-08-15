@@ -1,1 +1,0 @@
-import{Lb as s,Ra as t,qb as n,rb as a}from"./chunk-DQHNRFYU.js";var c=["class","component"],p=class e{static \u0275fac=function(o){return new(o||e)};static \u0275cmp=t({type:e,selectors:[["app-dashboard",8,"component"]],attrs:c,decls:2,vars:0,template:function(o,r){o&1&&(n(0,"p"),s(1,"dashboard.component works!"),a())},encapsulation:2})};export{p as DashboardComponent};
