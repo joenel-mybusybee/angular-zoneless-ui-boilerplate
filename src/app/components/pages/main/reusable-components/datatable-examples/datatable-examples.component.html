@@ -1,0 +1,65 @@
+<div class="container-fluid">
+  <!-- Basic Datatable -->
+  <div class="row mb-4">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <app-datatable [config]="basicConfig" (events)="onDatatableEvent($event)"></app-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Posts Datatable -->
+  <div class="mb-4 w-100 d-flex justify-content-between">
+    <h4>Server Side Datatable</h4>
+    <button class="btn btn-primary" (click)="refreshData()">Refresh</button>
+  </div>
+
+  <!-- Basic Datatable Example with Export -->
+  <div class="row mb-4">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <app-datatable [config]="basicTableWithExportConfig" [data]="posts" [loading]="loading" (events)="onDatatableEvent($event)"></app-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datatable with Buttons Example -->
+  <div class="row mb-4">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <app-datatable [config]="buttonsConfig" [data]="posts" [loading]="loading" (events)="onDatatableEvent($event)"></app-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datatables in Tabs Example -->
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <ul ngbNav #nav="ngbNav" [activeId]="activeTab" class="nav-tabs">
+            <li [ngbNavItem]="1">
+              <a ngbNavLink>Recent Posts</a>
+              <ng-template ngbNavContent>
+                <app-datatable [config]="tabsConfig['recent']" [data]="posts" [loading]="loading" (events)="onDatatableEvent($event)"></app-datatable>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+              <a ngbNavLink>Popular Posts</a>
+              <ng-template ngbNavContent>
+                <app-datatable [config]="tabsConfig['popular']" [data]="sortedPosts" (events)="onDatatableEvent($event)"></app-datatable>
+              </ng-template>
+            </li>
+          </ul>
+          <div [ngbNavOutlet]="nav" class="mt-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

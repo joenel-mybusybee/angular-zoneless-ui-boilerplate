@@ -1,0 +1,46 @@
+.app-layout {
+  min-height: 100vh;
+}
+
+.app-layout-content {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+}
+
+// Main content area
+.app-main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem;
+  margin-left: var(--sidebar-width);
+  min-height: calc(100vh - var(--header-height));
+  transition: margin-left 0.3s ease;
+  overflow-y: auto;
+
+  &.content-expanded {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+
+  // Mobile state
+  @media (max-width: 991.98px) {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+// Backdrop for mobile
+.sidebar-backdrop {
+  display: none;
+
+  @media (max-width: 991.98px) {
+    display: block;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1019;
+  }
+}

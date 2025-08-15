@@ -1,0 +1,22 @@
+.app-header {
+  height: var(--header-height);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  &.header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+  }
+
+  // Additional modifiers can be added here
+  &.header-transparent {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  &.header-compact {
+    padding: 0.5rem 1rem;
+  }
+}

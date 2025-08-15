@@ -1,0 +1,149 @@
+@charset "UTF-8";
+/* You can add global styles to this file, and also import other style files */
+@use 'bootstrap/scss/bootstrap.scss' as *;
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* NGX-Datatable */
+@import '../../node_modules/@swimlane/ngx-datatable/index.css';
+@import '../../node_modules/@swimlane/ngx-datatable/themes/material.css';
+@import '../../node_modules/@swimlane/ngx-datatable/assets/icons.css';
+
+/* App Layout */
+:root {
+  --header-height: 60px;
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 70px;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Main Layout Structure */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Header Styles */
+.app-header {
+  height: var(--header-height);
+  background-color: var(--bs-primary);
+
+  &.header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+  }
+}
+
+/* Content Area */
+.app-layout-content {
+  display: flex;
+  flex: 1;
+  margin-top: var(--header-height); // Space for fixed header
+}
+
+/* Sidebar Styles */
+.app-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bs-light);
+  transition:
+    transform 0.3s ease,
+    width 0.3s ease;
+
+  &.sidebar-fixed {
+    position: fixed;
+    left: 0;
+    top: var(--header-height); // Position below header
+    bottom: 0;
+    z-index: 1020;
+    height: calc(100vh - var(--header-height)); // Adjust height to account for header
+    overflow-y: auto; // Allow scrolling if content is too long
+  }
+
+  &.sidebar-collapsed {
+    @media (min-width: 992px) {
+      width: var(--sidebar-collapsed-width);
+
+      .nav-text {
+        display: none;
+      }
+
+      .nav-link {
+        justify-content: center;
+        padding: 0.75rem 0;
+
+        i {
+          margin: 0 !important;
+        }
+      }
+    }
+  }
+
+  &.sidebar-hidden {
+    @media (max-width: 991.98px) {
+      transform: translateX(-100%);
+    }
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--bs-body-color);
+
+    i {
+      width: 24px;
+      margin-right: 0.5rem;
+      text-align: center;
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &.active {
+      color: var(--bs-primary);
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+/* Toast */
+.toast-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Datatable */
+.ngx-datatable.material .datatable-header .datatable-header-cell .sort-btn {
+  display: none !important;
+}
+.ngx-datatable.material .datatable-header .resize-handle {
+  visibility: visible !important;
+}
+/* Override Datatable Material Active Row Color */
+.ngx-datatable.material {
+  &.single-selection,
+  &.multi-selection,
+  &.multi-click-selection {
+    .datatable-body-row {
+      &.active {
+        background-color: var(--bs-primary-bg-subtle) !important;
+        color: var(--bs-primary-text) !important;
+
+        .datatable-row-group {
+          background-color: var(--bs-primary-bg-subtle) !important;
+          color: var(--bs-primary-text) !important;
+        }
+      }
+    }
+  }
+}
