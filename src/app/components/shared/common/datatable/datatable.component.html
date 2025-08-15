@@ -1,0 +1,267 @@
+<div class="datatable-container">
+  <!-- Header Section -->
+  @if (config.title || config.showSearch || config.enableFiltering || config.export?.enabled) {
+    <div class="datatable-header mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <!-- Title -->
+        @if (config.title) {
+          <h4 class="m-0">{{ config.title }}</h4>
+        }
+
+        <div class="d-flex gap-2 align-items-center flex-wrap justify-content-end">
+          <!-- Search -->
+          @if (config.showSearch) {
+            <div class="search-container">
+              <div class="input-group">
+                <span class="input-group-text form-control-sm">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input
+                  #searchInput
+                  id="{{ searchInputId }}"
+                  name="{{ searchInputId }}"
+                  type="text"
+                  class="form-control form-control-sm"
+                  placeholder="Search..."
+                  [(ngModel)]="searchTerm"
+                  (ngModelChange)="searchSubject.next($event)"
+                />
+              </div>
+            </div>
+          }
+
+          <div class="d-flex gap-1">
+            <!-- Column Toggle -->
+            @if (hasToggleableColumns()) {
+              <div class="d-inline-block" ngbDropdown [autoClose]="false">
+                <button class="btn btn-outline-secondary btn-sm" type="button" ngbDropdownToggle>
+                  <i class="bi bi-columns"></i>
+                  Columns
+                </button>
+                <div ngbDropdownMenu>
+                  @for (column of config.columns; track columnTrackBy($index, column)) {
+                    @if (column.isToggleable) {
+                      <button ngbDropdownItem (click)="toggleColumn(column)">
+                        <i class="bi" [class.bi-check-square]="!column.isHidden" [class.bi-square]="column.isHidden"></i>
+                        {{ column.name }}
+                      </button>
+                    }
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Export -->
+            @if (config.export?.enabled) {
+              <div class="d-inline-block" ngbDropdown>
+                <button class="btn btn-outline-secondary btn-sm" type="button" ngbDropdownToggle>
+                  <i class="bi bi-download"></i>
+                  Export
+                </button>
+                <div ngbDropdownMenu>
+                  @for (format of getExportFormats(); track format) {
+                    <button ngbDropdownItem (click)="exportData(format)">
+                      <i class="bi" [class]="getExportIcon(format)"></i>
+                      {{ format.toUpperCase() }}
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Table -->
+  <ngx-datatable
+    #datatable
+    class="material"
+    [class.virtual-scroll]="config.virtualScroll"
+    [rows]="rows"
+    [columns]="tableColumns"
+    [selected]="selected"
+    [selectionType]="tableSelectionType"
+    [columnMode]="'force'"
+    [headerHeight]="config.headerHeight || 50"
+    [footerHeight]="!config.hideFooter ? config.footerHeight || 50 : 0"
+    [rowHeight]="config.rowHeight || 50"
+    [scrollbarH]="true"
+    [scrollbarV]="config.virtualScroll"
+    [virtualization]="config.virtualScroll"
+    [loadingIndicator]="loading"
+    [externalPaging]="false"
+    [limit]="config.pageSize || 10"
+    [count]="rows.length"
+    [reorderable]="true"
+    [sorts]="state.sortProp ? [{ prop: convertProp(state.sortProp.prop), dir: state.sortProp.dir }] : []"
+    (select)="onSelect($event)"
+    (sort)="onSort($event)"
+    (page)="onPage($event)"
+    [messages]="{
+      emptyMessage: config.noDataMessage || 'No data.',
+      totalMessage: 'rows',
+      selectedMessage: 'selected',
+    }"
+  >
+    <!-- Columns -->
+    @for (column of config.columns; track columnTrackBy($index, column)) {
+      @if (!column.isHidden) {
+        <ngx-datatable-column
+          [name]="column.name"
+          [prop]="convertProp(column.prop)"
+          [sortable]="config.enableSorting !== false"
+          [resizeable]="true"
+          [width]="column.width"
+          [frozenLeft]="column.frozen === 'left'"
+          [frozenRight]="column.frozen === 'right'"
+          [canAutoResize]="true"
+        >
+          <!-- Header Template -->
+          <ng-template ngx-datatable-header-template let-sort="sortFn" let-sortDir="sortDir">
+            <div class="d-flex align-items-center justify-content-between w-100 h-100">
+              <div class="d-flex align-items-center gap-1">
+                {{ column.name }}
+                @if (config.enableFiltering && !column.isFilterDisabled) {
+                  <i class="bi bi-funnel" role="button" (click)="openFilterModal($event, column)"></i>
+                }
+              </div>
+              @if (config.enableSorting !== false) {
+                <i
+                  class="sort-icon"
+                  role="button"
+                  (click)="sort()"
+                  [class.bi-arrow-down-up]="!sortDir"
+                  [class.bi-arrow-up]="sortDir === 'asc'"
+                  [class.bi-arrow-down]="sortDir === 'desc'"
+                ></i>
+              }
+            </div>
+          </ng-template>
+
+          <!-- Cell Template -->
+          <ng-template ngx-datatable-cell-template let-row="row">
+            @switch (column.type) {
+              @case ('text') {
+                <span [title]="getTooltip(row, column)">
+                  @if (column.customFormat) {
+                    {{ column.customFormat(row) }}
+                  } @else {
+                    {{ row[column.prop] }}
+                  }
+                </span>
+              }
+              @case ('number') {
+                <span [title]="getTooltip(row, column)" class="float-end me-4">
+                  @if (column.customFormat) {
+                    {{ column.customFormat(row) }}
+                  } @else {
+                    {{ row[column.prop] | number }}
+                  }
+                </span>
+              }
+              @case ('decimal') {
+                <span [title]="getTooltip(row, column)" class="float-end me-4">
+                  @if (column.customFormat) {
+                    {{ column.customFormat(row) }}
+                  } @else {
+                    {{ row[column.prop] | number: '1.2-2' }}
+                  }
+                </span>
+              }
+              @case ('date') {
+                <span [title]="getTooltip(row, column)">
+                  {{ row[column.prop] | date: 'M/d/yyyy' }}
+                </span>
+              }
+              @case ('datetime') {
+                <span [title]="getTooltip(row, column)">
+                  {{ row[column.prop] | date: 'M/d/yyyy hh:mm a' }}
+                </span>
+              }
+              @case ('boolean') {
+                <span [title]="getTooltip(row, column)">
+                  {{ row[column.prop] ? 'Yes' : 'No' }}
+                </span>
+              }
+              @case ('action') {
+                <div class="d-flex gap-1" [class.justify-content-between]="column.actionsStyle === 'full-width'">
+                  @for (action of column.actions || []; track action.text) {
+                    @if (isActionVisible(action, row)) {
+                      <button
+                        type="button"
+                        [class]="'btn btn-sm ' + (action.class || 'btn-outline-primary')"
+                        [disabled]="isActionDisabled(action, row)"
+                        (click)="action.onClick(row)"
+                        [title]="action.text"
+                      >
+                        @if (action.type === 'icon') {
+                          <i [class]="action.icon"></i>
+                        } @else if (action.type === 'button-icon') {
+                          <i [class]="action.icon"></i> {{ action.text }}
+                        } @else {
+                          {{ action.text }}
+                        }
+                      </button>
+                    }
+                  }
+                </div>
+              }
+              @case ('checkbox') {
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [checked]="row[column.prop]"
+                    [disabled]="column.isDisabled || false"
+                    (change)="onCheckboxChange($event, row, column)"
+                  />
+                </div>
+              }
+              @case ('dropdown') {
+                <select
+                  class="form-select form-select-sm"
+                  [ngModel]="row[column.prop]"
+                  (ngModelChange)="row[column.prop] = $event"
+                  [disabled]="column.isDisabled || false"
+                >
+                  <option [ngValue]="null">Select...</option>
+                  @for (option of column.dropdownConfig?.options || []; track option) {
+                    <option [ngValue]="getDropdownValue(option, column)">
+                      {{ getDropdownDisplay(option, column) }}
+                    </option>
+                  }
+                </select>
+              }
+              @case ('input') {
+                <input
+                  [type]="column.inputConfig?.type || 'text'"
+                  class="form-control form-control-sm"
+                  [ngModel]="row[column.prop]"
+                  (ngModelChange)="row[column.prop] = $event"
+                  [disabled]="column.isDisabled || false"
+                  [min]="column.inputConfig?.min"
+                  [max]="column.inputConfig?.max"
+                  [step]="column.inputConfig?.step"
+                  [placeholder]="column.inputConfig?.placeholder"
+                />
+              }
+              @default {
+                <span [title]="getTooltip(row, column)">
+                  @if (column.customFormat) {
+                    {{ column.customFormat(row) }}
+                  } @else {
+                    {{ row[column.prop] }}
+                  }
+                </span>
+              }
+            }
+          </ng-template>
+        </ngx-datatable-column>
+      }
+    }
+  </ngx-datatable>
+</div>
+
+<app-filter-modal #filterModal />

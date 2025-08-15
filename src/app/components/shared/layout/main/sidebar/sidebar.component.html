@@ -1,0 +1,49 @@
+<aside
+  class="app-sidebar sidebar-fixed bg-light p-3"
+  [class.sidebar-collapsed]="collapsed"
+  [class.mobile-view]="isMobileView"
+  [class.sidebar-hidden]="isHidden"
+>
+  <nav>
+    <ul class="nav flex-column">
+      @for (item of navigationItems; track item.path) {
+        <li class="nav-item" [attr.data-path]="item.path">
+          <a
+            class="nav-link d-flex align-items-center justify-content-between"
+            [routerLink]="item.children?.length ? null : ['/main', item.path]"
+            (click)="item.children?.length ? toggleSubmenu(item.path, $event) : null"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: !item.children?.length }"
+          >
+            <div class="d-flex align-items-center">
+              <i class="bi" [class]="'bi-' + item.icon" class="me-2"></i>
+              <span class="nav-text">{{ item.label }}</span>
+            </div>
+            @if (item.children?.length) {
+              <i class="bi" [class.bi-chevron-down]="!isExpanded(item.path)" [class.bi-chevron-up]="isExpanded(item.path)"> </i>
+            }
+          </a>
+          <!-- Support for nested navigation -->
+          @if (item.children?.length) {
+            <div class="submenu-collapse" [class.show]="isExpanded(item.path)">
+              <ul class="nav flex-column ms-3">
+                @for (child of item.children; track child.path) {
+                  <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/main', item.path, child.path]" routerLinkActive="active">
+                      <i class="bi" [class]="'bi-' + child.icon" class="me-2"></i>
+                      <span class="nav-text">{{ child.label }}</span>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer ps-0">
+    <small>version {{ version }}</small>
+  </div>
+</aside>
