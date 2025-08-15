@@ -1,0 +1,46 @@
+:host ::ng-deep ngb-toast {
+  min-width: 300px;
+  border-left: 4px solid;
+  padding: 1rem;
+}
+
+:host ::ng-deep ngb-toast.bg-success {
+  background-color: #d4edda !important;
+  border-left-color: #28a745;
+}
+
+:host ::ng-deep ngb-toast.bg-danger {
+  background-color: #f8d7da !important;
+  border-left-color: #dc3545;
+}
+
+:host ::ng-deep ngb-toast.bg-warning {
+  background-color: #fff3cd !important;
+  border-left-color: #ffc107;
+}
+
+:host ::ng-deep ngb-toast.bg-info {
+  background-color: #cce5ff !important;
+  border-left-color: #0dcaf0;
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+.toast-body {
+  margin-top: 2px;
+}
+
+.btn-close {
+  padding: 0;
+  font-size: 0.875rem;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}

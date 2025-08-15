@@ -1,0 +1,19 @@
+// Logo styling
+.logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+header {
+  min-height: 64px;
+}
+
+main {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
+}
+
+.btn-primary {
+  font-size: 1.25rem;
+  border-radius: 2rem;
+}

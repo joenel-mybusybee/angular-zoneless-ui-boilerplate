@@ -1,0 +1,122 @@
+<h4>Modal Examples:</h4>
+<div class="mb-3 d-flex flex-wrap gap-2">
+  <button class="btn btn-outline-primary" (click)="openSmall()">Small Modal</button>
+  <button class="btn btn-outline-primary" (click)="openLarge()">Large Modal</button>
+  <button class="btn btn-outline-primary" (click)="openAsync()">Async Save Modal</button>
+  <button class="btn btn-outline-primary" (click)="openStepper()">Stepper Modal</button>
+  <button class="btn btn-outline-primary" (click)="openCustom()">Custom Buttons Modal</button>
+  <button class="btn btn-outline-primary" (click)="openFormModal()">Form Modal</button>
+  <button class="btn btn-outline-primary" (click)="openAsyncFormModal()">Async Form Modal</button>
+</div>
+<!-- Form Modal -->
+<app-modal #formModal [config]="formModalConfig" (close)="closeFormModal()" (save)="saveFormModal()">
+  <ng-template #modalContent>
+    <form [formGroup]="form" (ngSubmit)="saveFormModal()" autocomplete="off" novalidate>
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input id="name" type="text" class="form-control" formControlName="name" [class.is-invalid]="shouldShowError('name')" />
+        @if (shouldShowError('name')) {
+          <div class="invalid-feedback">
+            {{ getErrorMessage('name') }}
+          </div>
+        }
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input id="email" type="email" class="form-control" formControlName="email" [class.is-invalid]="shouldShowError('email')" />
+        @if (shouldShowError('email')) {
+          <div class="invalid-feedback">
+            {{ getErrorMessage('email') }}
+          </div>
+        }
+      </div>
+      <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <input id="age" type="number" class="form-control" formControlName="age" [class.is-invalid]="shouldShowError('age')" />
+        @if (shouldShowError('age')) {
+          <div class="invalid-feedback">
+            {{ getErrorMessage('age') }}
+          </div>
+        }
+      </div>
+    </form>
+  </ng-template>
+</app-modal>
+
+<!-- Small Modal -->
+<app-modal #smallModal [config]="smallModalConfig">
+  <ng-template #modalContent>
+    <p>This is a small modal. Press ESC or click outside to close.</p>
+  </ng-template>
+</app-modal>
+
+<!-- Large Modal -->
+<app-modal #largeModal [config]="largeModalConfig">
+  <ng-template #modalContent>
+    <p>This is a large modal.</p>
+  </ng-template>
+</app-modal>
+
+<!-- Async Save Modal -->
+<app-modal #asyncModal [config]="asyncModalConfig" (close)="closeAsync()">
+  <ng-template #modalContent>
+    <p>Click save to simulate an async operation.</p>
+  </ng-template>
+</app-modal>
+
+<!-- Stepper Modal -->
+<app-modal #stepperModal [config]="stepperModalConfig" (close)="closeStepper()">
+  <ng-template #modalContent>
+    @if (stepperRecords[activeItem - 1]) {
+      <div class="mb-2"><strong>Name:</strong> {{ stepperRecords[activeItem - 1].name }}</div>
+      <div class="mb-2"><strong>Age:</strong> {{ stepperRecords[activeItem - 1].age }}</div>
+      <div class="mb-2"><strong>Address:</strong> {{ stepperRecords[activeItem - 1].address }}</div>
+      <p class="text-muted">Item {{ activeItem }} of {{ totalItems }}</p>
+    }
+  </ng-template>
+</app-modal>
+
+<!-- Custom Buttons Modal -->
+<app-modal #customModal [config]="customModalConfig">
+  <ng-template #modalContent>
+    <p>This modal has custom action buttons in the footer.</p>
+    <div class="d-flex gap-2 mt-2">
+      @for (btn of customButtons; track btn) {
+        <button type="button" class="btn" [class]="btn.class" (click)="btn.action()">
+          @if (btn.icon) {
+            <i class="bi {{ btn.icon }} me-1"></i>
+          }
+          {{ btn.label }}
+        </button>
+      }
+    </div>
+  </ng-template>
+</app-modal>
+
+<!-- Async Form Modal -->
+<app-modal #asyncFormModal [config]="asyncFormModalConfig">
+  <ng-template #modalContent>
+    <form [formGroup]="asyncForm" autocomplete="off" novalidate>
+      <div class="mb-3">
+        <label for="title" class="form-label">Post Title</label>
+        <input
+          id="title"
+          type="text"
+          class="form-control"
+          formControlName="title"
+          [class.is-invalid]="submitted && asyncForm.get('title')?.invalid"
+        />
+        @if (submitted && asyncForm.get('title')?.errors) {
+          <div class="invalid-feedback">
+            @if (asyncForm.get('title')?.errors?.['required']) {
+              <span>Title is required.</span>
+            }
+            @if (asyncForm.get('title')?.errors?.['minlength']) {
+              <span>Title must be at least 3 characters.</span>
+            }
+          </div>
+        }
+      </div>
+    </form>
+  </ng-template>
+</app-modal>
