@@ -1,0 +1,127 @@
+aside.app-sidebar {
+  position: fixed;
+  left: 0;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  width: var(--sidebar-width);
+  background-color: var(--bs-light);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+  z-index: 1020;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+
+  // Base navigation styles
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: #333;
+    cursor: pointer;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+
+    i {
+      width: 24px;
+      text-align: center;
+      margin-right: 0.75rem;
+      transition:
+        margin 0.3s ease,
+        transform 0.3s ease;
+    }
+
+    .nav-text {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &.active {
+      color: var(--bs-primary);
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+  }
+
+  // Parent and child active states
+  .nav-item {
+    // When submenu has active item
+    .submenu-collapse .nav-link.active ~ .nav-link,
+    .submenu-collapse .nav-link.active + .nav-link,
+    &:has(.submenu-collapse .nav-link.active) > .nav-link {
+      color: var(--bs-primary);
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+
+    // Active state for both parent and child
+    > .nav-link.active,
+    .submenu-collapse .nav-link.active {
+      color: var(--bs-primary);
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+  }
+
+  // Submenu styles
+  .submenu-collapse {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .nav-link {
+      padding-left: 2.75rem; // Increased padding for nested items
+    }
+
+    // Ensure content is visible when expanded
+    &.show {
+      overflow: visible;
+    }
+  }
+
+  // Desktop collapsed state
+  &.sidebar-collapsed {
+    width: var(--sidebar-collapsed-width);
+
+    .nav-text {
+      opacity: 0;
+      width: 0;
+      display: none;
+    }
+
+    .nav-link {
+      padding: 0.75rem 0;
+      justify-content: center;
+
+      i {
+        margin: 0;
+      }
+    }
+
+    // Hide submenu in collapsed state
+    .submenu-collapse {
+      display: none;
+    }
+  }
+
+  // Mobile state
+  &.mobile-view {
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+
+    &.sidebar-hidden {
+      transform: translateX(-100%);
+    }
+  }
+
+  .sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    color: #666;
+    font-size: 0.8rem;
+    border-top: 1px solid #eee;
+  }
+}

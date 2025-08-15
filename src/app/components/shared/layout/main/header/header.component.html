@@ -1,0 +1,28 @@
+<header class="app-header header-fixed bg-primary text-white p-3 d-flex align-items-center justify-content-between">
+  <div class="d-flex align-items-center">
+    <!-- Hamburger button for mobile -->
+    <button class="btn btn-link text-white d-lg-none me-2" (click)="onToggleSidebar()" aria-label="Toggle sidebar">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+    <!-- Desktop sidebar toggle -->
+    <button class="btn btn-link text-white d-none d-lg-block me-2" (click)="onToggleSidebar()" aria-label="Toggle sidebar">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+    <span class="fw-bold fs-4">Admin Dashboard</span>
+  </div>
+  <div ngbDropdown class="dropdown">
+    <button ngbDropdownToggle class="btn btn-primary dropdown-toggle d-flex align-items-center" type="button">
+      <span class="me-2">Profile</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+        <path d="M11 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" />
+        <path
+          fill-rule="evenodd"
+          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0 0 14A7 7 0 0 0 8 1zM4.285 12.433A5.978 5.978 0 0 1 8 13a5.978 5.978 0 0 1 3.715-1.567c-.2-.58-.805-1.433-3.715-1.433-2.91 0-3.515.853-3.715 1.433z"
+        />
+      </svg>
+    </button>
+    <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
+      <li><a class="dropdown-item" href="#" (click)="logout()">Logout</a></li>
+    </ul>
+  </div>
+</header>

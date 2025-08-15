@@ -1,0 +1,14 @@
+<div class="app-layout">
+  <app-header (toggleSidebar)="handleToggleSidebar()"></app-header>
+  <div class="app-layout-content">
+    <app-sidebar [collapsed]="sidebarCollapsed && !isMobile()" [isMobileView]="isMobile()" [isHidden]="!sidebarOpen && isMobile()"> </app-sidebar>
+    <main class="app-main-content" [class.content-expanded]="sidebarCollapsed && !isMobile()">
+      <router-outlet></router-outlet>
+    </main>
+    <!-- Backdrop only shows on mobile when sidebar is open -->
+    @if (sidebarOpen && isMobile()) {
+      <div class="sidebar-backdrop" (click)="handleToggleSidebar()"></div>
+    }
+  </div>
+</div>
+<app-toast></app-toast>

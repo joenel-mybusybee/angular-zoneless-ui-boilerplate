@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.modal-header {
+  &.danger {
+    background-color: var(--bs-danger);
+    color: white;
+  }
+  &.warning {
+    background-color: var(--bs-warning);
+  }
+  &.info {
+    background-color: var(--bs-info);
+  }
+  &.success {
+    background-color: var(--bs-success);
+    color: white;
+  }
+}
+
+.modal-body {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  .btn {
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.item-identifier {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+
+  .btn-icon {
+    padding: 0.25rem 0.5rem;
+    line-height: 1;
+  }
+}
+
+.btn-spinner {
+  width: 1rem !important;
+  height: 1rem !important;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  border-width: 0.15em;
+  border-color: var(--bs-primary) var(--bs-gray-200) var(--bs-gray-200) var(--bs-gray-200);
+}
