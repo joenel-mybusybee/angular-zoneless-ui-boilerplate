@@ -56,4 +56,4 @@ jobs:
           # Then approve it
           gh pr review "${{ steps.cpr.outputs.pull-request-number }}" --approve
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
