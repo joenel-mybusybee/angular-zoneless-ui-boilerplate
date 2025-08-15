@@ -1,0 +1,97 @@
+<ng-template #defaultModalTemplate>
+  <div class="modal-header {{ config.style }} position-relative d-flex align-items-center justify-content-between">
+    <div style="width: 200px">
+      <h4 class="modal-title text-truncate mb-0" title="{{ config.title }}">
+        {{ config.title }}
+      </h4>
+    </div>
+    @if (config.totalItems) {
+      <div class="position-absolute start-50 translate-middle-x">
+        <span class="item-identifier d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-icon btn-outline-secondary" (click)="prev()" [disabled]="!canNavigatePrev">
+            <i class="bi bi-caret-left"></i>
+          </button>
+          <span class="mx-2">
+            <b>{{ config.activeItem }}</b> of <b>{{ config.totalItems }}</b>
+          </span>
+          <button type="button" class="btn btn-sm btn-icon btn-outline-secondary" (click)="next()" [disabled]="!canNavigateNext">
+            <i class="bi bi-caret-right"></i>
+          </button>
+        </span>
+      </div>
+    }
+    <div style="width: 40px" class="text-end">
+      <button type="button" class="btn-close" aria-label="Close" (click)="dismissModal()"></button>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    @if (alert && !config.closeOnSave) {
+      <div class="container-fluid">
+        <div class="alert alert-{{ alert.type === ALERT_TYPE.ERROR ? 'danger' : alert.type }} d-flex align-items-center" role="alert">
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-check-circle': alert.type === ALERT_TYPE.SUCCESS,
+              'bi-exclamation-circle': alert.type === ALERT_TYPE.ERROR,
+              'bi-info-circle': alert.type === ALERT_TYPE.INFO,
+              'bi-exclamation-triangle': alert.type === ALERT_TYPE.WARNING,
+            }"
+          ></i>
+          <div class="ms-1">
+            @if (alert.title) {
+              <strong>{{ alert.title }}</strong>
+            }
+            @if (alert.message) {
+              <div>{{ alert.message }}</div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    <ng-template [ngTemplateOutlet]="modalContent || defaultContent"></ng-template>
+  </div>
+
+  @if (config.closeLabel || config.saveLabel || (config.customActionButtons || []).length > 0) {
+    <div class="modal-footer">
+      <div class="d-flex justify-content-between w-100">
+        <div class="d-flex gap-2">
+          @if (config.totalItems) {
+            <button type="button" class="btn btn-primary" (click)="prev()" [disabled]="!canNavigatePrev">
+              <i class="bi bi-arrow-left-short"></i> Prev
+            </button>
+            <button type="button" class="btn btn-primary" (click)="next()" [disabled]="!canNavigateNext">
+              Next <i class="bi bi-arrow-right-short"></i>
+            </button>
+          }
+          @for (button of config.customActionButtons; track button) {
+            @if (!button.isHidden) {
+              <button type="button" [class]="'btn ' + (button.class || 'btn-primary')" [disabled]="button.isDisabled" (click)="button.action()">
+                {{ button.label }}
+              </button>
+            }
+          }
+        </div>
+        <div class="d-flex gap-2">
+          @if (config.closeLabel) {
+            <button type="button" class="btn btn-secondary" (click)="dismissModal()">
+              {{ config.closeLabel }}
+            </button>
+          }
+          @if (config.saveLabel) {
+            <button type="button" class="btn btn-primary" [disabled]="isFormInvalid || isInSavingState" (click)="saveAction()">
+              @if (isInSavingState) {
+                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              }
+              {{ config.saveLabel }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</ng-template>
+
+<ng-template #defaultContent>
+  <ng-content></ng-content>
+</ng-template>

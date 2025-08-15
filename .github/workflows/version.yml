@@ -1,0 +1,45 @@
+on:
+  release:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Switch to main branch
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard $GITHUB_SHA
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update package.json version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          jq ".version = \"$VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
+
+      - name: Create Pull Request for version update
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: version-update/${{ github.ref_name }}
+          title: 'chore: update version to ${{ github.ref_name }}'
+          commit-message: 'chore: update version to ${{ github.ref_name }}'
+          base: main
+          body: 'Automated version update from release workflow.'
+          labels: version-update
+          delete-branch: true
+          merge-method: squash
+          auto-merge: true
